@@ -55,8 +55,14 @@ export function createProvider<Props, Values>(
   const useContext = <T extends NameMap<Keys, Values>[Keys]>(
     selector: (value: NameMap<Keys, Values>) => T
   ) => {
+    if (!nameMap) {
+      throw Error(
+        `The context consumer must be wrapped with its corresponding Provider`
+      );
+    }
+
     const { context } = selector(nameMap);
-    return useReactContext<T["value"]>(context as any);
+    return useReactContext<T["value"] | never>(context as any);
   };
 
   return { Provider, useContext };
