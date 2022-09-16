@@ -21,21 +21,26 @@ export function createProvider<Props, Values>(
 ) {
   type Keys = keyof Values;
 
-  let obj: Values;
   let nameMap: NameMap<Keys, Values> | never;
 
   const Provider: FC<PropsWithChildren<Props>> = ({ children, ...props }) => {
-    obj = useValue(props as Props);
+    const obj = useValue(props as Props);
 
     nameMap = Object.keys(obj as any).reduce((result, key) => {
+      if (!nameMap) {
+        return {
+          ...result,
+          [key]: {
+            context: createContext(obj[key as Keys]),
+            value: obj[key as Keys],
+          },
+        };
+      }
+
       return {
         ...result,
         [key]: {
-          ...(nameMap
-            ? nameMap[key as Keys]
-            : {
-                context: createContext(obj[key as Keys]),
-              }),
+          ...nameMap[key as Keys],
           value: obj[key as Keys],
         },
       };
