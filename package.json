@@ -1,0 +1,21 @@
+{
+  "name": "react-constate",
+  "version": "1.0.0",
+  "packageManager": "yarn@3.2.3",
+  "main": "dist/index.js",
+  "module": "dist/index.d.ts",
+  "workspaces": [
+    "examples/**"
+  ],
+  "scripts": {
+    "build": "rm -rf ./dist && mkdir dist && tsc ./src/index.ts -d --outDir dist"
+  },
+  "dependencies": {
+    "react": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^18.7.18",
+    "@types/react": "^18",
+    "typescript": "^4.8.3"
+  }
+}
