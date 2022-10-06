@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { createProvider } from "../../../../../dist";
+// import { createProvider } from "../../../../../dist";
+import { createProvider } from "../../../../../src";
 
 interface Props {
   a: string;

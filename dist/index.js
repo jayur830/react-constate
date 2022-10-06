@@ -25,28 +25,39 @@ exports.__esModule = true;
 exports.createProvider = void 0;
 var react_1 = require("react");
 function createProvider(useValue) {
-    var obj;
     var nameMap;
     var Provider = function (_a) {
         var children = _a.children, props = __rest(_a, ["children"]);
-        obj = useValue(props);
+        var obj = useValue(props);
         nameMap = Object.keys(obj).reduce(function (result, key) {
-            var _a;
-            return __assign(__assign({}, result), (_a = {}, _a[key] = __assign(__assign({}, (nameMap
-                ? nameMap[key]
-                : {
-                    context: (0, react_1.createContext)(obj[key])
-                })), { value: obj[key] }), _a));
+            var _a, _b;
+            if (!nameMap) {
+                return __assign(__assign({}, result), (_a = {}, _a[key] = {
+                    context: (0, react_1.createContext)(obj[key]),
+                    value: obj[key]
+                }, _a));
+            }
+            return __assign(__assign({}, result), (_b = {}, _b[key] = __assign(__assign({}, nameMap[key]), { value: obj[key] }), _b));
         }, {});
         return Object.keys(nameMap).reduceRight(function (children, key) {
             var _a = nameMap[key], context = _a.context, value = _a.value;
             return (0, react_1.createElement)(context.Provider, { value: value }, children);
         }, children);
     };
-    var useContext = function (selector) {
-        var context = selector(nameMap).context;
-        return (0, react_1.useContext)(context);
-    };
+    function useContext(selector) {
+        if (!nameMap) {
+            throw Error('The context consumer must be wrapped with its corresponding Provider');
+        }
+        if (selector) {
+            var context = selector(nameMap).context;
+            return (0, react_1.useContext)(context);
+        }
+        return Object.keys(nameMap).reduce(function (result, key) {
+            var _a;
+            return __assign(__assign({}, result), (_a = {}, _a[key] = (0, react_1.useContext)(nameMap[key].context), _a));
+        }, {});
+    }
+    ;
     return { Provider: Provider, useContext: useContext };
 }
 exports.createProvider = createProvider;

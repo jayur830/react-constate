@@ -8,6 +8,9 @@ declare type NameMap<Keys extends keyof Values, Values> = {
 };
 export declare function createProvider<Props, Values>(useValue: (props: Props) => Values): {
     Provider: FC<PropsWithChildren<Props>>;
-    useContext: <T extends NameMap<keyof Values, Values>[keyof Values]>(selector: (value: NameMap<keyof Values, Values>) => T) => T["value"];
+    useContext: {
+        <T extends NameMap<keyof Values, Values>[keyof Values]>(selector: (value: NameMap<keyof Values, Values>) => T): T["value"];
+        <T_1 extends NameMap<keyof Values, Values>[keyof Values]>(): { [Key in keyof Values]: Values[Key]; };
+    };
 };
 export {};

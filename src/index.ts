@@ -52,17 +52,27 @@ export function createProvider<Props, Values>(
     }, children) as JSX.Element;
   };
 
-  const useContext = <T extends NameMap<Keys, Values>[Keys]>(
-    selector: (value: NameMap<Keys, Values>) => T
-  ) => {
+  function useContext<T extends NameMap<Keys, Values>[Keys]>(selector: (value: NameMap<Keys, Values>) => T): T["value"];
+  function useContext<T extends NameMap<Keys, Values>[Keys]>(): { [Key in Keys]: Values[Key] };
+
+  function useContext<T extends NameMap<Keys, Values>[Keys]>(
+    selector?: (value: NameMap<Keys, Values>) => T
+  ) {
     if (!nameMap) {
-      throw Error(
-        `The context consumer must be wrapped with its corresponding Provider`
-      );
+      throw Error('The context consumer must be wrapped with its corresponding Provider');
     }
 
-    const { context } = selector(nameMap);
-    return useReactContext<T["value"] | never>(context as any);
+    if (selector) {
+      const { context } = selector(nameMap);
+      return useReactContext<T["value"] | never>(context as any);
+    }
+
+    return Object.keys(nameMap).reduce((result, key) => {
+      return {
+        ...result,
+        [key]: useReactContext(nameMap[key as keyof typeof nameMap].context),
+      };
+    }, {});
   };
 
   return { Provider, useContext };
