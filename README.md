@@ -41,9 +41,25 @@ export default function [NAME]() {
 import { useContext } from '../Provider';
 
 export default function [CHILD]() {
-    const a = useContext((value) => value.a);
-    const b = useContext((value) => value.b);
-    const c = useContext((value) => value.c);
+    const a = useContext((value) => value.a); // string
+    const b = useContext((value) => value.b); // number
+    const c = useContext((value) => value.c); // boolean
+    ...
+    return <... />;
+}
+```
+
+or
+
+```typescript
+// [COMPONENT_DIR]/child/index.tsx
+
+import { useContext } from '../Provider';
+
+export default function [CHILD]() {
+    const a = useContext('a'); // string
+    const b = useContext('b'); // number
+    const c = useContext('c'); // boolean
     ...
     return <... />;
 }

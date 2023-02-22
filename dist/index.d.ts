@@ -1,5 +1,5 @@
 import { Context, FC, PropsWithChildren } from "react";
-interface NameMapObj<K extends keyof V, V> {
+export interface NameMapObj<K extends keyof V, V> {
     value: V[K];
     context: Context<V[K]>;
 }
@@ -10,7 +10,8 @@ export declare function createProvider<Props, Values>(useValue: (props: Props) =
     Provider: FC<PropsWithChildren<Props>>;
     useContext: {
         <T extends NameMap<keyof Values, Values>[keyof Values]>(selector: (value: NameMap<keyof Values, Values>) => T): T["value"];
-        <T_1 extends NameMap<keyof Values, Values>[keyof Values]>(): { [Key in keyof Values]: Values[Key]; };
+        <Key extends keyof Values, R extends NameMap<keyof Values, Values>[Key]>(key: Key): R["value"];
+        (): { [Key_1 in keyof Values]: Values[Key_1]; };
     };
 };
 export {};

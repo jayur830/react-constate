@@ -29,35 +29,43 @@ function createProvider(useValue) {
     var Provider = function (_a) {
         var children = _a.children, props = __rest(_a, ["children"]);
         var obj = useValue(props);
-        nameMap = Object.keys(obj).reduce(function (result, key) {
-            var _a, _b;
+        nameMap = Object.entries(obj).reduce(function (result, _a) {
+            var _b, _c;
+            var key = _a[0], value = _a[1];
             if (!nameMap) {
-                return __assign(__assign({}, result), (_a = {}, _a[key] = {
-                    context: (0, react_1.createContext)(obj[key]),
-                    value: obj[key]
-                }, _a));
+                return __assign(__assign({}, result), (_b = {}, _b[key] = {
+                    context: (0, react_1.createContext)(value),
+                    value: value
+                }, _b));
             }
-            return __assign(__assign({}, result), (_b = {}, _b[key] = __assign(__assign({}, nameMap[key]), { value: obj[key] }), _b));
+            return __assign(__assign({}, result), (_c = {}, _c[key] = __assign(__assign({}, nameMap[key]), { value: value }), _c));
         }, {});
-        return Object.keys(nameMap).reduceRight(function (children, key) {
-            var _a = nameMap[key], context = _a.context, value = _a.value;
-            return (0, react_1.createElement)(context.Provider, { value: value }, children);
+        return Object.entries(nameMap).reduceRight(function (nameMapChildren, _a) {
+            var nameMapObj = _a[1];
+            var _b = nameMapObj, context = _b.context, value = _b.value;
+            return (0, react_1.createElement)(context.Provider, { value: value }, nameMapChildren);
         }, children);
     };
     function useContext(selector) {
         if (!nameMap) {
-            throw Error('The context consumer must be wrapped with its corresponding Provider');
+            throw Error("The context consumer must be wrapped with its corresponding Provider");
         }
         if (selector) {
-            var context = selector(nameMap).context;
+            if (typeof selector === "function") {
+                var context_1 = selector(nameMap).context;
+                // eslint-disable-next-line react-hooks/rules-of-hooks
+                return (0, react_1.useContext)(context_1);
+            }
+            var context = nameMap[selector].context;
+            // eslint-disable-next-line react-hooks/rules-of-hooks
             return (0, react_1.useContext)(context);
         }
-        return Object.keys(nameMap).reduce(function (result, key) {
-            var _a;
-            return __assign(__assign({}, result), (_a = {}, _a[key] = (0, react_1.useContext)(nameMap[key].context), _a));
+        return Object.entries(nameMap).reduce(function (result, _a) {
+            var _b;
+            var key = _a[0], obj = _a[1];
+            return __assign(__assign({}, result), (_b = {}, _b[key] = (0, react_1.useContext)(obj.context), _b));
         }, {});
     }
-    ;
     return { Provider: Provider, useContext: useContext };
 }
 exports.createProvider = createProvider;
