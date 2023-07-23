@@ -1,12 +1,17 @@
 {
   "name": "react-constate",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "packageManager": "yarn@3.2.3",
+  "author": "Lee Jae Yeol <jayur830@naver.com> (https://github.com/jayur830)",
   "main": "dist/index.js",
   "module": "dist/index.d.ts",
   "workspaces": [
     "examples/**"
   ],
+  "repository": {
+    "type": "github",
+    "url": "https://github.com/jayur830/react-constate"
+  },
   "scripts": {
     "build": "rm -rf ./dist && mkdir dist && tsc ./src/index.ts -d --outDir dist"
   },
